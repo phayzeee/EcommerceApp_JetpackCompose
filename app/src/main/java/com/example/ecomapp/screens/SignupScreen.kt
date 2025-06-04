@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.isTraceInProgress
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,12 +31,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.ecomapp.AppUtils
 import com.example.ecomapp.R
 import com.example.ecomapp.viewModel.AuthViewModel
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel = viewModel()) {
+fun SignupScreen(modifier: Modifier = Modifier,navController: NavController, authViewModel: AuthViewModel = viewModel()) {
 
     var email by remember {
         mutableStateOf("")
@@ -47,6 +49,10 @@ fun SignupScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel = v
 
     var password by remember {
         mutableStateOf("")
+    }
+
+    var isLoading by remember {
+        mutableStateOf(false)
     }
 
     var context = LocalContext.current
@@ -131,19 +137,25 @@ fun SignupScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel = v
 
         Button (
             onClick = {
+                isLoading = true
                 authViewModel.signUp(email,name,password) { success, message ->
                     if (success) {
-
+                        isLoading = false
+                        navController.navigate("home") {
+                            popUpTo("auth") {inclusive = true}
+                        }
                     } else {
+                        isLoading = false
                         AppUtils.showToast(context, message?:"Something went wrong")
                     }
                 }
             },
+            enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
         ) {
-            Text(text = "Signup", fontSize = 22.sp)
+            Text(text = if (isLoading) "Signing" else "Signup", fontSize = 22.sp)
         }
     }
 }
