@@ -2,9 +2,11 @@ package com.example.ecomapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.ecomapp.pages.CategoriesProductPage
 import com.example.ecomapp.screens.AuthScreen
 import com.example.ecomapp.screens.HomeScreen
 import com.example.ecomapp.screens.LoginScreen
@@ -16,8 +18,9 @@ import com.google.firebase.auth.auth
 fun AppNavigation(modifier: Modifier = Modifier) {
 
     val navController = rememberNavController()
+    GlobalNavigation.navController = navController
 
-    val isLoggedIn = Firebase.auth.currentUser!=null
+    val isLoggedIn = Firebase.auth.currentUser != null
     val firstPage = if (isLoggedIn) "home" else "auth"
 
     NavHost(navController = navController, startDestination = firstPage) {
@@ -37,5 +40,15 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("home") {
             HomeScreen(modifier, navController)
         }
+
+        composable("category-product/{categoryId}") {
+            val categoryId = it.arguments?.getString("categoryId")
+            CategoriesProductPage(modifier, categoryId!!)
+
+        }
     }
+}
+
+object GlobalNavigation {
+    lateinit var navController: NavController
 }
