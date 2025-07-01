@@ -15,7 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,23 +30,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import com.example.ecomapp.AppUtils
 import com.example.ecomapp.model.ProductModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
 import com.tbuonomo.viewpagerdotsindicator.compose.type.ShiftIndicatorType
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
-import com.google.accompanist.placeholder.placeholder
 
 @Composable
 fun ProductDetailsPage(modifier: Modifier = Modifier, productId: String) {
@@ -54,6 +53,8 @@ fun ProductDetailsPage(modifier: Modifier = Modifier, productId: String) {
     var product by remember {
         mutableStateOf(ProductModel())
     }
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         Firebase.firestore.collection("data").document("stock")
@@ -91,7 +92,8 @@ fun ProductDetailsPage(modifier: Modifier = Modifier, productId: String) {
         HorizontalPager(state = pagerState, pageSpacing = 24.dp) {
             AsyncImage(
                 model = product.images[it],
-                contentDescription = "banner Image",
+                contentDescription = "product Image",
+                error = rememberVectorPainter(image = Icons.Filled.Warning),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
@@ -147,7 +149,9 @@ fun ProductDetailsPage(modifier: Modifier = Modifier, productId: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            onClick = {}
+            onClick = {
+                AppUtils.addToCart(context, productId)
+            }
         ) {
             Text(
                 text = "Add to Cart", style = TextStyle(
@@ -191,7 +195,6 @@ fun ProductDetailsPage(modifier: Modifier = Modifier, productId: String) {
             ){
                 Text(text = "$key : ", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                 Text(text = value, style = TextStyle(fontSize = 16.sp))
-
             }
         }
 

@@ -1,6 +1,5 @@
 package com.example.ecomapp.viewModel
 
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.lifecycle.ViewModel
 import com.example.ecomapp.model.UserModel
 import com.google.firebase.Firebase

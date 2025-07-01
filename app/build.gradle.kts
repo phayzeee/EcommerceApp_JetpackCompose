@@ -75,6 +75,5 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.0")
     implementation("com.tbuonomo:dotsindicator:5.1.0")
-    implementation("com.google.accompanist:accompanist-placeholder-material:0.34.0")
 
 }

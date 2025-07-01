@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,11 +31,15 @@ import coil.compose.AsyncImage
 import com.example.ecomapp.model.ProductModel
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ecomapp.AppUtils
 import com.example.ecomapp.GlobalNavigation
 
 
 @Composable
 fun ProductItemView(modifier: Modifier = Modifier, product: ProductModel) {
+
+    val context = LocalContext.current
+
     Card(
         modifier = modifier
             .padding(8.dp)
@@ -85,7 +90,7 @@ fun ProductItemView(modifier: Modifier = Modifier, product: ProductModel) {
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = {
-
+                    AppUtils.addToCart(context, product.id)
                 }) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
