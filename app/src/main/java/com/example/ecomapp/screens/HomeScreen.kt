@@ -37,6 +37,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import java.util.Vector
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.ecomapp.pages.CartPage
 import com.example.ecomapp.pages.FavouritePage
@@ -53,7 +54,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         NavItem("Profile", Icons.Default.Person)
     )
 
-    var selectedIndex by remember {
+    var selectedIndex by rememberSaveable {
         mutableStateOf(0)
     }
 

@@ -2,9 +2,12 @@ package com.example.ecomapp.pages
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -16,6 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ecomapp.AppUtils
+import com.example.ecomapp.GlobalNavigation
 import com.example.ecomapp.components.CartItemView
 import com.example.ecomapp.model.UserModel
 import com.google.firebase.Firebase
@@ -59,10 +64,28 @@ fun CartPage(modifier: Modifier = Modifier) {
             )
         )
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
             items(userModel.value.cartItems.toList(), key = { it.first }) { (productId, qty) ->
                 CartItemView(productId = productId, quantity = qty)
             }
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            onClick = {
+                GlobalNavigation.navController.navigate("checkout")
+            }
+        ) {
+            Text(
+                text = "Add to Cart", style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
         }
     }
 }
