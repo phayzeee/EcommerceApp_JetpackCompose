@@ -1,11 +1,15 @@
 package com.example.ecomapp
 
+import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
+import com.example.ecomapp.model.OrderModel
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import java.util.UUID
 
 object AppUtils {
 
@@ -63,11 +67,50 @@ object AppUtils {
         }
     }
 
+    fun clearCartAndAddToOrders() {
+        val userDoc = Firebase.firestore.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+
+        userDoc.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val currentCart = it.result.get("cartItems") as? Map<String, Long> ?: emptyMap()
+                val order = OrderModel(
+                    id = UUID.randomUUID().toString(),
+                    userId = FirebaseAuth.getInstance().currentUser?.uid!!,
+                    date = Timestamp.now(),
+                    items = currentCart,
+                    status = "Ordered",
+                    address = it.result.get("address") as String
+                )
+
+                Firebase.firestore.collection("orders")
+                    .document(order.id).set(order)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            userDoc.update("cartItems", FieldValue.delete())
+                        }
+                    }
+            }
+        }
+    }
+
     fun getDiscountPercentage() : Float {
         return 10.0f
     }
 
     fun getTaxPercentage() : Float {
-        return 10.0f
+        return 15.0f
+    }
+
+    fun showDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Payment Successful")
+            .setMessage("Thank you! your payment was completed successfully")
+            .setPositiveButton("OK") {_, _ ->
+               GlobalNavigation.navController.popBackStack()
+                GlobalNavigation.navController.navigate("home")
+            }
+            .setCancelable(false)
+            .show()
     }
 }

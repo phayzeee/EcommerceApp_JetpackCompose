@@ -1,5 +1,6 @@
 package com.example.ecomapp.pages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -64,28 +66,40 @@ fun CartPage(modifier: Modifier = Modifier) {
             )
         )
 
-        LazyColumn(
-            modifier = Modifier.weight(1f)
-        ) {
-            items(userModel.value.cartItems.toList(), key = { it.first }) { (productId, qty) ->
-                CartItemView(productId = productId, quantity = qty)
+        if(userModel.value.cartItems.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(userModel.value.cartItems.toList(), key = { it.first }) { (productId, qty) ->
+                    CartItemView(productId = productId, quantity = qty)
+                }
+            }
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                onClick = {
+                    GlobalNavigation.navController.navigate("checkout")
+                }
+            ) {
+                Text(
+                    text = "Add to Cart", style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "No Items here", fontSize = 32.sp)
             }
         }
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            onClick = {
-                GlobalNavigation.navController.navigate("checkout")
-            }
-        ) {
-            Text(
-                text = "Add to Cart", style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-        }
+
     }
 }

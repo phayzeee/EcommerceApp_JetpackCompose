@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,8 @@ fun CheckoutPage(modifier: Modifier = Modifier) {
     val userModel = remember {
         mutableStateOf(UserModel())
     }
+
+    val context = LocalContext.current
 
     val productList = remember {
         mutableStateListOf(ProductModel())
@@ -113,20 +117,32 @@ fun CheckoutPage(modifier: Modifier = Modifier) {
         RowCheckOutItems("Tax (+)", tax.value.toString())
         Spacer(modifier = Modifier.height(10.dp))
         HorizontalDivider()
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             text = "To Pay",
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )
         Text(
-            modifier = modifier.fillMaxWidth(),
-            text = "PKR"+total.value.toString(),
+            modifier = Modifier.fillMaxWidth(),
+            text = "PKR" + total.value.toString(),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                AppUtils.clearCartAndAddToOrders()
+                AppUtils.showDialog(context)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+        ) {
+            Text(text = "Pay Now", fontSize = 18.sp)
+        }
     }
 }
 
